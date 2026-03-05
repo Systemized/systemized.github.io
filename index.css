@@ -1,0 +1,28 @@
+* {
+    padding: none;
+    margin: none;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+html {
+    padding: 0 40px;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+
+    div {
+        min-width: 160px;
+    }
+
+    li {
+        font-size: large;
+    }
+}
+
+ul {
+    text-decoration: none;
+    list-style: none;
+}
