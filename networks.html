@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Networking Concepts</title>
     <link rel="stylesheet" href="index.css">
-
 
     <meta http-equiv="Content-Security-Policy" content="default-src 'self';">
     <meta http-equiv="X-Frame-Options" content="DENY">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta name="referrer" content="no-referrer">
 </head>
+
 <body>
+
     <nav id="navbar">
         <div id="title">
             <h1>Systemized</h1>
@@ -23,14 +25,140 @@
             </ul>
         </div>
     </nav>
+
     <hr>
+
     <h2>Networking Concepts Page</h2>
 
-    <div>
-        <p>Demonstrate:</p>
-        <p>- DNS --- Domain resolution (nslookup or dig)</p>
-        <p>- IP Addressing --- IPv4 / IPv6 resolution</p>
-        <p>- Protocols --- HTTP vs HTTPS, headers, status codes</p>
-    </div>
+    <p>
+        This page explains how networking concepts are used in the deployment of this website.
+        The site is hosted using GitHub Pages and accessed through a public domain. When a user
+        visits the website, several networking systems work together to locate the server,
+        establish a secure connection, and deliver the webpage content.
+    </p>
+
+    <hr>
+
+    <h3>DNS (Domain Name System)</h3>
+
+    <p>
+        The Domain Name System (DNS) converts human-readable domain names into IP addresses that
+        computers use to locate servers on the internet. When a user enters my domain
+        <strong>systemized.github.io</strong> in a browser, a DNS lookup occurs to find the IP
+        address of the GitHub Pages server hosting the site.
+    </p>
+
+    <p>
+        Example DNS lookup using the <code>nslookup</code> command:
+    </p>
+
+    <pre>
+$ nslookup systemized.github.io
+
+Server:		131.96.6.237
+Address:	131.96.6.237#53
+
+Non-authoritative answer:
+Name:	systemized.github.io
+Address: 185.199.110.153
+Name:	systemized.github.io
+Address: 185.199.111.153
+Name:	systemized.github.io
+Address: 185.199.109.153
+Name:	systemized.github.io
+Address: 185.199.108.153
+
+</pre>
+
+    <p>
+        These addresses belong to GitHub's hosting infrastructure. DNS allows users to access
+        the website using a readable domain instead of remembering numerical IP addresses.
+    </p>
+
+    <hr>
+
+    <h3>IP Addressing</h3>
+
+    <p>
+        An IP address uniquely identifies a device or server on the internet. The GitHub Pages
+        servers hosting this website use IPv4 addresses. When DNS resolves the domain name,
+        the browser connects to one of these IP addresses to retrieve the webpage.
+    </p>
+
+    <p>Example IPv4 addresses returned by DNS:</p>
+
+    <pre>
+185.199.110.153
+185.199.111.153
+185.199.109.153
+185.199.108.153
+</pre>
+
+    <p>
+        These are IPv4 addresses used by GitHub’s infrastructure. GitHub uses multiple addresses for
+        redundancy and load balancing, meaning requests to my website can be handled by different servers
+        to improve reliability and performance.
+    </p>
+
+    <p>
+        When a user visits my website, the browser connects to one of these IP addresses using the
+        TCP/IP networking stack to request and receive the webpage files.
+    </p>
+
+    <hr>
+
+    <h3>Protocols (HTTP / HTTPS)</h3>
+
+    <p>
+        This website uses the <strong>HTTPS</strong> protocol. HTTPS is the secure version
+        of HTTP and encrypts communication between the user's browser and the web server
+        using TLS (Transport Layer Security). This prevents attackers from intercepting
+        or modifying data in transit.
+    </p>
+
+    <p>
+        When a browser requests this website, it sends an HTTP request to the server.
+        The server then responds with a status code and headers describing the response.
+    </p>
+
+    <p>Example request using <code>curl</code>:</p>
+
+    <pre>
+$ curl -I https://systemized.github.io
+
+HTTP/2 200 
+server: GitHub.com
+content-type: text/html; charset=utf-8
+last-modified: Thu, 05 Mar 2026 08:03:08 GMT
+...
+content-length: 987
+</pre>
+
+    <p>
+        The status code <strong>200 OK</strong> indicates that the request was successful
+        and the server returned the requested webpage.
+    </p>
+
+    <p>
+        The response headers provide additional information and security protections:
+    </p>
+
+    <ul>
+        <li><strong>server: GitHub.com</strong> — indicates the site is hosted on GitHub's servers.</li>
+        <li><strong>content-type: text/html</strong> — tells the browser the response contains an HTML webpage.</li>
+        <li><strong>strict-transport-security</strong> — forces browsers to always connect using HTTPS.</li>
+        <li><strong>x-content-type-options: nosniff</strong> — prevents browsers from guessing file types.</li>
+        <li><strong>x-frame-options: DENY</strong> — prevents the page from being embedded in frames.</li>
+    </ul>
+
+    <hr>
+
+    <p>
+        These networking components — DNS resolution, IP addressing, and HTTP/HTTPS protocols —
+        work together to allow users to reliably and securely access this website hosted on
+        GitHub Pages.
+    </p>
+
 </body>
+
 </html>
