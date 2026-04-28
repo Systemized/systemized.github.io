@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance</title>
+    <link rel="stylesheet" href="index.css">
+
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self';">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="no-referrer">
+</head>
+
+<body>
+
+    <nav id="navbar">
+        <div id="title">
+            <h1>Systemized</h1>
+        </div>
+        <div>
+            <ul>
+                <li><a href="./index.html">Home</a></li>
+                <li><a href="./networks.html">Networks</a></li>
+                <li><a href="./security.html">Security</a></li>
+                <li><a href="./monitoring.html">Monitoring</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <hr>
+
+    <h2>Performance Page</h2>
+
+    <p>
+        This page describes the performance optimizations applied to the website. The goal
+        is to reduce how long the browser waits before it can display the page, and to
+        keep the size of the response small.
+    </p>
+
+    <hr>
+
+    <h3>CDN (Content Delivery Network)</h3>
+
+    <p>
+        GitHub Pages serves traffic through the <strong>Fastly</strong> CDN. When the
+        browser resolves <code>systemized.github.io</code>, the IP addresses returned belong
+        to Fastly edge servers that cache the static files in many locations. A user in a
+        different region downloads the page from a nearby edge server instead of from
+        GitHub's origin, which lowers latency.
+    </p>
+
+    <p>
+        The CDN behavior is visible in the response headers:
+    </p>
+
+    <pre>
+$ curl -I https://systemized.github.io
+
+HTTP/2 200
+server: GitHub.com
+content-type: text/html; charset=utf-8
+cache-control: max-age=600
+age: 42
+x-served-by: cache-iad-kiad7000051-IAD
+x-cache: HIT
+x-cache-hits: 1
+</pre>
+
+    <p>
+        The <strong>x-cache: HIT</strong> line shows that the file was returned from the
+        edge cache rather than re-fetched from origin. The <strong>cache-control</strong>
+        header lets the browser keep its own copy for ten minutes, which avoids a network
+        request entirely on repeat visits within that window.
+    </p>
+
+    <hr>
+
+    <h3>Browser Caching</h3>
+
+    <p>
+        Because every page links to the same <code>index.css</code> file, the browser only
+        downloads the stylesheet on the first request and reuses its cached copy on every
+        page after that. The <code>cache-control: max-age=600</code> header sent by GitHub
+        Pages also lets the browser keep that copy across page reloads for ten minutes
+        without re-validating with the server.
+    </p>
+
+    <hr>
+
+    <h3>Lazy Loading</h3>
+
+    <p>
+        Any image added to the site uses the native <code>loading="lazy"</code> attribute:
+    </p>
+
+    <pre>
+&lt;img src="diagram.png" alt="network diagram" loading="lazy" width="600" height="400"&gt;
+</pre>
+
+    <p>
+        With this attribute the browser only downloads the image when it is about to enter
+        the viewport. Specifying <code>width</code> and <code>height</code> reserves layout
+        space ahead of time so the page does not shift when the image arrives.
+    </p>
+
+    <hr>
+
+    <h3>Preconnect and Resource Hints</h3>
+
+    <p>
+        For any external origin the page might contact later (for example a font CDN or an
+        analytics endpoint), a <code>preconnect</code> hint can be added in the
+        <code>&lt;head&gt;</code>:
+    </p>
+
+    <pre>
+&lt;link rel="preconnect" href="https://www.google-analytics.com"&gt;
+</pre>
+
+    <p>
+        This lets the browser perform the DNS lookup and TLS handshake in parallel with
+        parsing the HTML, so the actual request later finishes faster.
+    </p>
+
+    <hr>
+
+    <p>
+        The CDN and browser caching are the two changes that have the largest visible
+        effect on page load. Lazy loading and preconnect hints become more useful as the
+        site grows to include images and external resources.
+    </p>
+
+</body>
+
+</html>

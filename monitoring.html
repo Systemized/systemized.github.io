@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoring</title>
+    <link rel="stylesheet" href="index.css">
+
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self';">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="no-referrer">
+</head>
+
+<body>
+
+    <nav id="navbar">
+        <div id="title">
+            <h1>Systemized</h1>
+        </div>
+        <div>
+            <ul>
+                <li><a href="./index.html">Home</a></li>
+                <li><a href="./networks.html">Networks</a></li>
+                <li><a href="./security.html">Security</a></li>
+                <li><a href="./performance.html">Performance</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <hr>
+
+    <h2>Monitoring Page</h2>
+
+    <p>
+        This page describes how traffic to the website is monitored, and includes a small
+        client-side counter that tracks how many times this browser has loaded the page.
+    </p>
+
+    <hr>
+
+    <h3>GitHub Pages Traffic Insights</h3>
+
+    <p>
+        GitHub records request counts for repositories that publish a Pages site. The
+        traffic dashboard at <code>github.com/Systemized/systemized.github.io/graphs/traffic</code>
+        shows visitors and page views over the last 14 days, broken down by referring site
+        and by path. This is server-side data, so it is not affected by ad blockers or
+        client-side script filters.
+    </p>
+
+    <hr>
+
+    <h3>Client-Side Visit Counter</h3>
+
+    <p>
+        The script <code>script.js</code> increments a counter in <code>localStorage</code>
+        every time this page loads in the current browser. The counts below are read from
+        that storage when the page renders.
+    </p>
+
+    <pre>
+Visits from this browser: <span id="visit-count">0</span>
+First visit:              <span id="first-visit"></span>
+Last visit:               <span id="last-visit"></span>
+</pre>
+
+    <p><button id="reset-visits" type="button">Reset counter</button></p>
+
+    <p>
+        The data never leaves the browser, so this is not a privacy concern, but it is also
+        not a substitute for server-side analytics. It is useful as a basic check that the
+        page actually loaded and that the script policy in the CSP is permitting the local
+        script to run.
+    </p>
+
+    <hr>
+
+    <h3>Server-Side Analytics</h3>
+
+    <p>
+        For aggregated visitor data, a tag such as Google Analytics can be added. The
+        installation requires loading the <code>gtag.js</code> script and updating the
+        Content Security Policy to allow it. The relevant additions look like this:
+    </p>
+
+    <pre>
+&lt;link rel="preconnect" href="https://www.googletagmanager.com"&gt;
+&lt;script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"&gt;&lt;/script&gt;
+&lt;script&gt;
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX');
+&lt;/script&gt;
+</pre>
+
+    <p>
+        This is documented here rather than enabled, since the current site does not need a
+        real measurement ID and adding the script would require loosening the CSP.
+    </p>
+
+    <hr>
+
+    <h3>Network-Level Inspection</h3>
+
+    <p>
+        For ad-hoc inspection of the requests a browser makes when loading the site,
+        <strong>Wireshark</strong> can capture the TLS handshake and the HTTP/2 request
+        headers, and the browser's developer tools (Network tab) show the same data
+        without a packet capture. Both are useful for verifying that the security and
+        cache headers described on the other pages are actually being sent by the server.
+    </p>
+
+    <hr>
+
+    <p>
+        GitHub's traffic graph covers aggregate usage, the local counter confirms script
+        execution on the client, and Wireshark or DevTools cover the per-request detail.
+    </p>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

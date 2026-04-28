@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security</title>
+    <link rel="stylesheet" href="index.css">
+
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self';">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="no-referrer">
+    <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
+</head>
+
+<body>
+
+    <nav id="navbar">
+        <div id="title">
+            <h1>Systemized</h1>
+        </div>
+        <div>
+            <ul>
+                <li><a href="./index.html">Home</a></li>
+                <li><a href="./networks.html">Networks</a></li>
+                <li><a href="./performance.html">Performance</a></li>
+                <li><a href="./monitoring.html">Monitoring</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <hr>
+
+    <h2>Security Page</h2>
+
+    <p>
+        This page describes the security measures applied to the website. Because the site is
+        a static site hosted on GitHub Pages, there is no backend database or login form to
+        attack directly. The protections below focus on transport security, browser-side
+        hardening, and limiting what content the browser is allowed to load.
+    </p>
+
+    <hr>
+
+    <h3>HTTPS (TLS)</h3>
+
+    <p>
+        GitHub Pages automatically issues a TLS certificate through Let's Encrypt and
+        redirects HTTP traffic to HTTPS. All traffic between the browser and the server is
+        encrypted, which prevents passive eavesdropping and tampering by anyone on the
+        network path.
+    </p>
+
+    <p>Verifying the certificate and redirect with <code>curl</code>:</p>
+
+    <pre>
+$ curl -I http://systemized.github.io
+
+HTTP/1.1 301 Moved Permanently
+Location: https://systemized.github.io/
+...
+
+$ curl -I https://systemized.github.io
+
+HTTP/2 200
+strict-transport-security: max-age=31556952
+server: GitHub.com
+</pre>
+
+    <p>
+        The <strong>strict-transport-security</strong> header (HSTS) tells the browser to
+        only contact the site over HTTPS for the next year, even if a user types the URL
+        without <code>https://</code>.
+    </p>
+
+    <hr>
+
+    <h3>Content Security Policy</h3>
+
+    <p>
+        The Content Security Policy (CSP) is set through a meta tag in every page:
+    </p>
+
+    <pre>
+&lt;meta http-equiv="Content-Security-Policy" content="default-src 'self';"&gt;
+</pre>
+
+    <p>
+        With <code>default-src 'self'</code>, the browser will only load scripts, styles,
+        images, and other resources from this same origin. Any attempt to inject an inline
+        script or load a script from an external domain is blocked. This is the main
+        defense against XSS for a static site that has no server-side input handling.
+    </p>
+
+    <hr>
+
+    <h3>Other Response Headers</h3>
+
+    <p>
+        Several additional headers are set to harden how the browser treats the page:
+    </p>
+
+    <ul>
+        <li><strong>X-Frame-Options: DENY</strong> — the page cannot be embedded in an iframe, which prevents clickjacking.</li>
+        <li><strong>X-Content-Type-Options: nosniff</strong> — the browser will not try to guess the type of a response, which prevents some script-injection tricks.</li>
+        <li><strong>Referrer-Policy: no-referrer</strong> — no Referer header is sent when the user clicks an external link, so other sites do not learn where the user came from.</li>
+        <li><strong>Permissions-Policy</strong> — disables access to the geolocation, microphone, and camera APIs, since the site does not need them.</li>
+    </ul>
+
+    <hr>
+
+    <h3>Input Sanitization</h3>
+
+    <p>
+        The site does not currently take user input or write to a database, so there is no
+        SQL injection surface. If a form is added in the future, all values written into
+        the page should be passed through a library such as <strong>DOMPurify</strong>
+        before being inserted into the DOM, and any database query should use parameterized
+        statements rather than string concatenation.
+    </p>
+
+    <hr>
+
+    <p>
+        Together, HTTPS, HSTS, the CSP, and the additional response headers cover the
+        common browser-level attacks that apply to a static site: traffic interception,
+        cross-site scripting, clickjacking, and MIME confusion.
+    </p>
+
+</body>
+
+</html>

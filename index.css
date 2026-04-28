@@ -26,3 +26,14 @@ ul {
     text-decoration: none;
     list-style: none;
 }
+
+pre {
+    background: #f4f4f4;
+    padding: 8px;
+    overflow-x: auto;
+}
+
+button {
+    font-family: inherit;
+    padding: 4px 10px;
+}
